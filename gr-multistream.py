@@ -268,12 +268,12 @@ class multistream(gr.top_block):
         Read mpeg data stream from pipe, upload to server with low latency
         """
         
-        # Connect to icecast
-        ice = self.icecast_connect(options, key, samplerate, bitrate)
-        
         # TODO: error handling, never fail - retry and rewire
         poll = select.poll()
         poll.register(pipe, select.POLLIN|select.POLLERR)
+        
+        ice = None
+        last_connect = 0
         
         while True:
             r = poll.poll(1000)
@@ -284,7 +284,26 @@ class multistream(gr.top_block):
             fd, ev = r[0]
             d = pipe.read(4096)
             #print "read %d" % len(d)
-            ice.send(d)
+            
+            if ice == None and time.time() - last_connect > 4:
+                # Connect to icecast
+                print "... connecting"
+                last_connect = time.time()
+                try:
+                    ice = self.icecast_connect(options, key, samplerate, bitrate)
+                    print "... connected!"
+                except Exception:
+                    ice = None
+            
+            if ice != None:
+                try:
+                    ice.send(d)
+                except Exception:
+                    try:
+                        ice.close()
+                    except Exception:
+                        pass
+                    ice = None
             
     def icecast_connect(self, options, key, samplerate, bitrate):
         """
