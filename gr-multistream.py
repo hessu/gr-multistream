@@ -1,6 +1,9 @@
 #!/opt/local/bin/python2.7
 #!/usr/bin/env python
 #
+# Usage: python gr-multistream.py --freqset RNET-OH2RCH=145787,APRS-144800=144800,2M-145500=145500
+#
+#
 # Copyright 2005-2007,2011,2012 Free Software Foundation, Inc.
 #
 # GNU Radio is free software; you can redistribute it and/or modify
