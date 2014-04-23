@@ -14,11 +14,9 @@ request on github, I'll be happy to merge your fix. Thanks!
 Prerequirements
 -----------------
 
-An user who is familiar with python and gnuradio.
-
-A working gnuradio installation, with rtlsdr drivers working.
-
-The 'lame' MP3 encoder needs to be installed, too.
+* An user who is familiar with python and gnuradio.
+* A working gnuradio installation, with rtlsdr drivers working.
+* The 'lame' MP3 encoder needs to be installed, too.
 
 
 Execution

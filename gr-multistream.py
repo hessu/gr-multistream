@@ -331,7 +331,7 @@ class multistream(gr.top_block):
             }),
             request_format({
                 'ice-name': key,
-                'ice-genre': 'AM',
+                'ice-genre': 'Radio',
                 'ice-bitrate': bitrate,
                 'ice-private': 0,
                 'ice-public': 0,
