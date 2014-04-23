@@ -22,13 +22,14 @@ Prerequirements
 Execution
 -----------
 
-    python gr-multistream.py --freqset RNET-OH2RCH=145787,APRS-144800=144800 \
+    python gr-multistream.py --freqset RNET-OH2RCH=145787.5,APRS-144800=144800 \
         --icecast icecast.example.com --icepw passwordhere
 
 --freqset defines a comma-separated list of name-frequency pairs. Frequency
-(144800 in the above example) is given in kilohertz. The name (APRS-144800)
-is the stream name used for the Icecast server - you might want to embed the
-frequency in the stream name to make it visible on Icecast.
+(144800 in the above example) is given in kilohertz, floating point values
+should be accepted.  The name (APRS-144800) is the stream name used for the
+Icecast server - you might want to embed the frequency in the stream name to
+make it visible on Icecast.
 
 Icecast TCP server port is currently hardcoded as 8000. Sorry for that. But
 it's a script, so it's not really hardcoded.
