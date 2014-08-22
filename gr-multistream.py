@@ -49,8 +49,8 @@ class multistream(gr.top_block):
         parser=OptionParser(option_class=eng_option)
         parser.add_option("-a", "--args", type="string", default="",
                           help="UHD device address args [default=%default]")
-        parser.add_option("", "--dev", type="int", default=0,
-	                  help="Device ID (0, 1, 2...)")
+        parser.add_option("", "--dev", type="string", default=0,
+	                  help="Device (rtl=0 or something")
         parser.add_option("-f", "--freqset", type="string", default="",
                           help="Frequency set key=freq,key=freq,... in kHz")
         parser.add_option("-m", "--mode", type="string", default="fm",
@@ -71,7 +71,10 @@ class multistream(gr.top_block):
             parser.print_help()
             sys.exit(1)
 
-        self.vol = 0.8
+        if options.volume is None:
+            options.volume = 0.8
+            
+        self.vol = options.volume
         self.freqs = self.parse_freqset(options.freqset)
         
         self.freq_corr = 0
@@ -105,7 +108,7 @@ class multistream(gr.top_block):
         
         print ""
         # build graph
-        arg_s = "rtl=%d" % options.dev
+        arg_s = options.dev #"rtl=%d" % options.dev
         u = self.u = osmosdr.source(args=arg_s)
         
         u.set_center_freq(self.center_freq, 0)
@@ -224,8 +227,6 @@ class multistream(gr.top_block):
             # if no gain was specified, use the mid gain
             options.gain = (g.start() + g.stop())/2.0
 
-        if options.volume is None:
-            options.volume = 1.0
     
     def setup_upstream_pipe(self, key, options):
         fname = "pipe-%s.raw" % key
