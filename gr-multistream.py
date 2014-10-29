@@ -41,6 +41,7 @@ import threading
 import select
 import fcntl
 import socket
+import string
 from base64 import b64encode
 
 class multistream(gr.top_block):
@@ -60,8 +61,8 @@ class multistream(gr.top_block):
         parser.add_option("-V", "--volume", type="eng_float", default=1.0,
                           help="set volume (default is midpoint)")
         parser.add_option("-i", "--icecast", type="string", default="",
-                          help="Icecast base URL")
-        parser.add_option("-p", "--icepw", type="string", default="",
+                          help="Icecast host:port")
+        parser.add_option("-p", "--icepw", type="string", default="127.0.0.1:8000",
                           help="Icecast source password")
         parser.add_option("-O", "--audio-output", type="string", default="",
                           help="pcm device name.  E.g., hw:0,0 or surround51 or /dev/dsp")
@@ -296,7 +297,8 @@ class multistream(gr.top_block):
                 try:
                     ice = self.icecast_connect(options, key, samplerate, bitrate)
                     print "... connected!"
-                except Exception:
+                except Exception, e:
+                    print "... connect failed: %r" % e
                     ice = None
             
             if ice != None:
@@ -321,8 +323,17 @@ class multistream(gr.top_block):
         def request_format(request, line_separator="\n"):
             return line_separator.join(["%s: %s" % (key, str(val)) for (key, val) in request.items()])
         
+        a = string.split(options.icecast, ':')
+        host = a[0]
+        if len(a) > 0:
+            port = int(a[1])
+        else:
+            port = 8000
+            
+        print "connecting %s:%d" % (host, port)
+        
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        s.connect((options.icecast, 8000))
+        s.connect((host, port))
         s.sendall("SOURCE %s ICE/1.0\n%s\n%s\n\n" % (
             mountpoint,
             request_format({
